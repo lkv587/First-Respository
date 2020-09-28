@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <!--为了防止进程退出时，内存中的数据丢失，请加上此选项-->
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+    <contextName>logback</contextName>
+    <!--日志输出文件地址-->
+    <property name="LOG_HOME" value="./log"/>
+    <!--日志输出格式-->
+    <property name="PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %X{Sequence} %-5level %logger{36} - %msg%n"/>
+
+    <!--输出到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+             <level>ERROR</level>
+         </filter>-->
+        <encoder>
+            <pattern>%blue([%d{HH:mm:ss.SSS}]) %contextName [%thread] %yellow(%-5level) %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--输出到文件-->
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/awesome.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/awesome-%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+            <!--<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.timeBasedFileNamingAndTriggeringPolicy"/>-->
+            <!-- <maxFileSize>10MB</maxFileSize> -->
+            <!-- keep 10 days' worth of history capped at 8GB total size -->
+            <maxHistory>7</maxHistory>
+            <!--<totalSizeCap>8GB</totalSizeCap>-->
+        </rollingPolicy>
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 可用来获取StatusManager中的状态 -->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+    <!-- 特殊级别定义,自行在 application-xx 中定义，此配置只给生产使用 -->
+    <!--<logger name="com.taofeng.richcash.service" level="INFO"/>-->
+
+    <!-- 统一配置日志  -->
+    <root level="INFO">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </root>
+</configuration>
